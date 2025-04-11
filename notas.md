@@ -229,4 +229,9 @@ export const AppDataSource = new DataSource({
 
 ---
 
-Se quiser, posso também gerar um `README.md` explicando como rodar esse projeto com TypeORM e MySQL, incluindo comandos de setup e execução. Quer que eu crie?
+### Integrantes
+
+- João Filipe Alves de Albuquerque Silva UC24101
+- Guilherme Souza Rocha UC24101057
+- Louie Nery Silva UC24101358
+- Matheus Henrique Lacerda Lopes UC24101
