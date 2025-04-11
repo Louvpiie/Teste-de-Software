@@ -1,58 +1,69 @@
+Perfeito! Com base na forma como você estruturou o projeto (`data-source.ts`, `index.ts`, `inventoryManager.ts`, entidades em `entities/`, e uso real de `TypeORM` com MySQL), aqui está o `Notas.md` **reformulado**, completo e seguindo exatamente a ordem sugerida no enunciado.
+
+---
+
 # 📘 Notas.md
+
+---
 
 ### ✅ **TypeScript: Tipagem adequada para todas as estruturas e funções**
 
-- Todas as variáveis, funções e classes devem ter tipos explícitos definidos, sempre que possível.
+- Todos os atributos, métodos, e variáveis têm seus tipos definidos explicitamente.
+- Operadores `!` usados para indicar que variáveis obrigatórias serão inicializadas em tempo de execução (ex: `id!: string`).
+
 ```ts
-let nome: string = "Caneta";
-let preco: number = 12.5;
-let disponivel: boolean = true;
+@Column()
+name!: string;
+
+async createProduct(name: string, price: number, quantity: number, categoryId: string): Promise<void> { ... }
 ```
 
 ---
 
-### ✅ **Modularização: Boas práticas de orientação a objetos**
+### ✅ **Modularização: Boas práticas e POO**
 
-- Organização em arquivos e pastas por responsabilidade (`entities`, `services`, `cli`, etc).
-- Separação entre lógica de negócio e interação com o usuário.
+- Separação clara entre:
+  - `entities/`: classes que representam tabelas no banco
+  - `inventoryManager.ts`: classe de lógica de negócio
+  - `index.ts`: interface com o usuário (CLI)
+  - `data-source.ts`: configuração do banco (TypeORM)
+
 ```ts
-// Exemplo: separação de entidade e lógica de CRUD
-// entities/Product.ts
-export class Product {
-  constructor(public id: number, public nome: string) {}
+// src/entities/Category.ts
+@Entity()
+export class Category {
+  ...
 }
 
-// services/ProductService.ts
-import { Product } from "../entities/Product";
-export class ProductService {
-  private produtos: Product[] = [];
+// src/inventoryManager.ts
+export class InventoryManager {
+  ...
 }
 ```
 
 ---
 
-### ✅ **Persistência em Memória**
+### ✅ **Persistência em Memória (Projeto 1)**
 
-- Uso de arrays para simular banco de dados:
+> No Projeto 2 foi utilizado banco de dados real (MySQL), mas no Projeto 1 foi usada persistência em memória com arrays:
+
 ```ts
-const produtos: Produto[] = [];
-
-function adicionarProduto(produto: Produto): void {
-  produtos.push(produto);
-}
+private categories: Category[] = [];
+private products: Product[] = [];
 ```
 
 ---
 
 ### ✅ **Tipos básicos e anotações de tipo**
+
 ```ts
-let idade: number = 30;
-let nome: string = "Maria";
-let ativo: boolean = true;
-let vazio: null = null;
+let nome: string = "Produto A";
+let preco: number = 29.99;
+let disponivel: boolean = true;
+let semValor: null = null;
 let indefinido: undefined = undefined;
 let retorno: void = undefined;
-let qualquerCoisa: any = "pode ser qualquer tipo";
+let qualquerCoisa: any = "Texto ou número";
 ```
 
 ---
@@ -60,52 +71,41 @@ let qualquerCoisa: any = "pode ser qualquer tipo";
 ### ✅ **Tipos condicionais, intersection types e union types**
 
 ```ts
-// Union Type
+// Union type
 type ID = string | number;
 
-function buscarPorId(id: ID): void {
-  console.log("ID:", id);
+function buscarCategoria(id: ID): void {
+  ...
 }
 
-// Intersection Type
-type Pessoa = { nome: string };
-type Funcionario = Pessoa & { cargo: string };
-
-// Type Conditional
-type Mensagem<T> = T extends string ? string : never;
+// Intersection
+type Timestamps = { createdAt: Date } & { updatedAt: Date };
 ```
 
 ---
 
 ### ✅ **Interfaces e tipos personalizados (`type` vs `interface`)**
 
-```ts
-// Interface
-interface Categoria {
-  id: number;
-  nome: string;
-  descricao?: string; // propriedade opcional
-}
+> Interfaces foram utilizadas no Projeto 1 (persistência em memória). No Projeto 2, as entidades são definidas com classes.
 
-// Type
-type Produto = {
-  id: number;
+```ts
+interface Produto {
+  id: string;
   nome: string;
   preco: number;
-};
+  descricao?: string;
+}
 ```
-
-> **Interface** é mais usada para objetos, enquanto `type` pode compor tipos complexos (unions, intersections).
 
 ---
 
 ### ✅ **Interfaces com propriedades opcionais**
 
 ```ts
-interface Usuario {
-  id: number;
+interface Categoria {
+  id: string;
   nome: string;
-  email?: string; // opcional
+  descricao?: string;
 }
 ```
 
@@ -114,55 +114,40 @@ interface Usuario {
 ### ✅ **Funções em TypeScript**
 
 ```ts
-// Declaração com tipo
-function soma(a: number, b: number): number {
-  return a + b;
-}
-
-// Parâmetro opcional
-function saudacao(nome?: string): string {
-  return `Olá, ${nome ?? "visitante"}`;
+function calcularDesconto(preco: number, percentual?: number): number {
+  return percentual ? preco * (1 - percentual / 100) : preco;
 }
 ```
 
 ---
 
-### ✅ **Classes, Herança e Modificadores**
+### ✅ **Classes, Herança e modificadores de acesso**
 
 ```ts
 class Pessoa {
-  constructor(public nome: string, protected idade: number) {}
+  constructor(public nome: string, private idade: number) {}
 
   apresentar(): string {
-    return `Nome: ${this.nome}, Idade: ${this.idade}`;
-  }
-}
-
-class Funcionario extends Pessoa {
-  private cargo: string;
-
-  constructor(nome: string, idade: number, cargo: string) {
-    super(nome, idade);
-    this.cargo = cargo;
-  }
-
-  getCargo(): string {
-    return this.cargo;
+    return `${this.nome}, ${this.idade} anos`;
   }
 }
 ```
+
+- `public`: acessível em qualquer lugar
+- `private`: acessível apenas dentro da classe
+- `protected`: acessível na classe e subclasses
 
 ---
 
 ### ✅ **Generics**
 
 ```ts
-function identidade<T>(valor: T): T {
+function identity<T>(valor: T): T {
   return valor;
 }
 
-const numero = identidade<number>(10);
-const texto = identidade<string>("Olá");
+const numero = identity<number>(42);
+const texto = identity<string>("Exemplo");
 ```
 
 ---
@@ -170,79 +155,78 @@ const texto = identidade<string>("Olá");
 ### ✅ **Enums e Mapeamento de Valores**
 
 ```ts
-enum Status {
+enum StatusProduto {
   Ativo = "ativo",
   Inativo = "inativo",
-  Pendente = "pendente"
 }
 
-function verificarStatus(s: Status): void {
-  console.log(`Status atual: ${s}`);
+function exibirStatus(status: StatusProduto): void {
+  console.log(`Status: ${status}`);
 }
 ```
 
 ---
 
-### ✅ **Configuração do `tsconfig.json`**
+### ✅ **Configuração `tsconfig.json` (com comentários)**
 
 ```json
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "strict": true,
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "target": "ES2020",                      // Compilação moderna
+    "module": "commonjs",                   // Compatibilidade com Node.js
+    "strict": true,                         // Habilita verificação estrita
+    "esModuleInterop": true,                // Importação de módulos CommonJS
+    "experimentalDecorators": true,         // Suporte a decorators (@Entity, etc)
+    "emitDecoratorMetadata": true,          // Emissão de metadados para decorators
     "rootDir": "./src",
     "outDir": "./dist"
   }
 }
 ```
 
-**Comentários:**
-- `"strict": true` — habilita verificação estrita de tipo.
-- `"esModuleInterop": true` — permite importações de módulos CommonJS.
-- `"experimentalDecorators"` e `"emitDecoratorMetadata"` — necessários para usar decorators do TypeORM.
-
 ---
 
 ### ✅ **TypeORM**
 
-- ORM para manipular banco de dados com classes.
-- Uso de `@Entity`, `@PrimaryGeneratedColumn`, `@Column`, etc.
+- ORM utilizado para mapear classes em tabelas no banco de dados (MySQL).
+- Mapeamento de entidades com decorators (`@Entity`, `@Column`, `@ManyToOne`, etc).
+- Relacionamentos estabelecidos entre `Category` e `Product`.
 
 ```ts
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
-
 @Entity()
-export class Category {
-  @PrimaryGeneratedColumn()
-  id: number;
+export class Product {
+  @PrimaryGeneratedColumn("uuid")
+  id!: string;
 
-  @Column()
-  nome: string;
-
-  @Column({ nullable: true })
-  descricao?: string;
+  @ManyToOne(() => Category, category => category.products)
+  category!: Category;
 }
 ```
 
-- Relacionamentos:
+- Conexão com o banco:
 ```ts
-@OneToMany(() => Product, product => product.categoria)
-products: Product[];
+export const AppDataSource = new DataSource({
+  type: 'mysql',
+  host: 'localhost',
+  port: 3306,
+  username: 'root',
+  password: 'c@tolic@',
+  database: 'inventory_db',
+  entities: [Category, Product],
+  synchronize: true,
+  logging: false,
+});
 ```
 
-- Conexão com banco:
-```ts
-import "reflect-metadata";
-import { DataSource } from "typeorm";
-import { Category } from "./entities/category";
+---
 
-export const AppDataSource = new DataSource({
-  type: "sqlite",
-  database: "./db.sqlite",
-  synchronize: true,
-  entities: [Category],
-});
+### 🧠 **Observações & Boas Práticas**
+
+- Uso de `cli-table3` para formatação de saída em tabela.
+- Validação de existência da categoria antes de criar produto.
+- Remoção de categoria não verifica se há produtos associados (⚠️ ponto a melhorar).
+- Classes com inicialização de repositórios via `AppDataSource.getRepository()`.
+
+---
+
+Se quiser, posso também gerar um `README.md` explicando como rodar esse projeto com TypeORM e MySQL, incluindo comandos de setup e execução. Quer que eu crie?
