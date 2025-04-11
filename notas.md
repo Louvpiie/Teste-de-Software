@@ -1,7 +1,3 @@
-Perfeito! Com base na forma como você estruturou o projeto (`data-source.ts`, `index.ts`, `inventoryManager.ts`, entidades em `entities/`, e uso real de `TypeORM` com MySQL), aqui está o `Notas.md` **reformulado**, completo e seguindo exatamente a ordem sugerida no enunciado.
-
----
-
 # 📘 Notas.md
 
 ---
