@@ -225,9 +225,9 @@ export const AppDataSource = new DataSource({
 
 ---
 
-### Integrantes
+### 👥 **Integrantes**
 
-- João Filipe Alves de Albuquerque Silva UC24101
+- João Filipe Alves de Albuquerque Silva UC24102128
 - Guilherme Souza Rocha UC24101057
 - Louie Nery Silva UC24101358
-- Matheus Henrique Lacerda Lopes UC24101
+- Matheus Henrique Lacerda Lopes UC24102584
