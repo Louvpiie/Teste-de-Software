@@ -16,6 +16,8 @@ projeto_estoque/
 │   ├── api.py         # API FastAPI
 │   ├── estoque.py     # Interface gráfica PyQt6
 │   └── start.py       # Inicializa API e GUI
+├── test/
+│   └── test_api.py    # Testes da API
 ├── requirements.txt   # Dependências
 ├── README.md          # Guia de uso
 └── docs/
