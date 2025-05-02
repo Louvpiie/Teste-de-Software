@@ -7,7 +7,7 @@ Este projeto é um sistema simples de **gerenciamento de estoque**, com uma API 
 1. **Clone o repositório**
 
 ```bash
-clone https://github.com/dudamarqs/gerenciamento-de-produtos-python.git
+clone https://github.com/louvpiie/gerenciamento-de-produtos-python.git
 cd gerenciamento-tarefas-python
 ```
 
